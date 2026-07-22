@@ -27,7 +27,9 @@
     * { box-sizing: border-box; }
     html, body {
       margin: 0;
-      min-height: 100%;
+      padding: 0;
+      width: 100%;
+      height: 100vh;
       background:
         radial-gradient(circle at 50% 48%, rgba(34,242,255,0.2) 0%, rgba(11,43,55,0.32) 18%, rgba(3,16,24,0.96) 56%, #01060a 100%);
       color: var(--text);
@@ -42,6 +44,7 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
+      z-index: 0;
     }
 
     body::before {
@@ -60,12 +63,14 @@
     }
 
     .app {
-      min-height: 100svh;
-      padding: calc(var(--safe-top) + 8px) 10px calc(var(--safe-bottom) + 10px);
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: 8px;
-      position: relative;
+      position: fixed;
+      inset: 0;
+      padding: calc(var(--safe-top) + 6px) 8px calc(var(--safe-bottom) + 6px);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 1;
+      overflow: hidden;
     }
 
     .topbar,
@@ -73,11 +78,13 @@
       display: grid;
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      gap: 8px;
-      font-size: 10px;
+      gap: 6px;
+      font-size: 9px;
       text-transform: uppercase;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.15em;
       color: var(--muted);
+      flex-shrink: 0;
+      height: fit-content;
     }
 
     .topbar .center,
@@ -86,6 +93,7 @@
       color: var(--cyan-2);
       font-weight: 700;
       text-shadow: 0 0 12px var(--glow);
+      font-size: 10px;
     }
 
     .topbar .right,
@@ -97,9 +105,10 @@
 
     .field {
       position: relative;
-      min-height: 0;
+      flex: 1;
       display: grid;
       place-items: center;
+      min-height: 0;
     }
 
     .trace-h, .trace-v {
@@ -138,21 +147,22 @@
       border: 1px solid var(--line-soft);
     }
 
-    .frame-ring { width: min(96vw, 470px); aspect-ratio: 1; }
+    .frame-ring { width: min(85vw, 280px); aspect-ratio: 1; }
     .frame-ring::before { content: ""; width: 84%; aspect-ratio: 1; }
     .frame-ring::after { content: ""; width: 62%; aspect-ratio: 1; }
 
     .left-rail, .right-rail {
       position: absolute;
-      top: 13%;
-      width: 118px;
+      top: 15%;
+      width: 85px;
       display: grid;
-      gap: 12px;
+      gap: 8px;
       color: var(--muted);
       z-index: 2;
+      font-size: 11px;
     }
-    .left-rail { left: 0; }
-    .right-rail { right: 0; text-align: right; }
+    .left-rail { left: 6px; }
+    .right-rail { right: 6px; text-align: right; }
 
     .rail-box {
       position: relative;
@@ -161,41 +171,29 @@
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       box-shadow: inset 0 0 0 1px rgba(34,242,255,0.04), 0 0 18px rgba(34,242,255,0.06);
-      padding: 9px 10px;
-      clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+      padding: 6px 8px;
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
     }
 
     .rail-box .k {
-      font-size: 8px;
-      letter-spacing: 0.22em;
+      font-size: 7px;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--faint);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .rail-box .v {
-      font-size: 18px;
+      font-size: 14px;
       line-height: 1;
       color: var(--cyan-2);
       text-shadow: 0 0 10px var(--glow);
       font-weight: 700;
     }
 
-    .rail-box .s {
-      font-size: 10px;
-      line-height: 1.35;
-      margin-top: 6px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
     .brain-shell {
       position: relative;
-      width: min(74vw, 350px);
+      width: min(80vw, 260px);
       aspect-ratio: 1;
       display: grid;
       place-items: center;
@@ -242,21 +240,6 @@
     .core-outline.soft { stroke: rgba(142,252,255,0.4); stroke-width: 0.6; }
     .accent-red { fill: none; stroke: rgba(255, 62, 62, 0.85); stroke-width: 1.15; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(255,62,62,0.25)); }
 
-    .permission-note {
-      position: absolute;
-      bottom: 8%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(82vw, 280px);
-      text-align: center;
-      font-size: 9px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--faint);
-      line-height: 1.5;
-      z-index: 2;
-    }
-
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @keyframes spinReverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
     @keyframes drift { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -120; } }
@@ -298,12 +281,10 @@
         <div class="rail-box">
           <div class="k">Time</div>
           <div class="v" id="timeNow">--:--</div>
-          <div class="s">Passive view</div>
         </div>
         <div class="rail-box">
           <div class="k">Weather</div>
           <div class="v" id="weatherTemp">--°</div>
-          <div class="s" id="weatherText">Awaiting local data</div>
         </div>
       </aside>
 
@@ -369,21 +350,18 @@
 
       <aside class="right-rail" aria-label="Right status rail">
         <div class="rail-box">
-          <div class="k">Next item</div>
-          <div class="v" style="font-size:13px; line-height:1.22;" id="nextItem">Pending</div>
-          <div class="s">Routine layer</div>
+          <div class="k">Next</div>
+          <div class="v" style="font-size:12px; line-height:1.2;" id="nextItem">Pending</div>
         </div>
         <div class="rail-box">
-          <div class="k">Weather setup</div>
-          <div class="s" id="weatherHint">Allow location in Safari for local weather</div>
+          <div class="k">Status</div>
+          <div class="v" id="weatherText" style="font-size:12px;">--</div>
         </div>
       </aside>
-
-      <div class="permission-note">For weather: open in Safari, allow location when prompted, or enable Safari location access in iPhone Settings.</div>
     </section>
 
     <section class="footer" aria-label="Footer telemetry">
-      <div class="left">Open-Meteo feed</div>
+      <div class="left">Open-Meteo</div>
       <div class="center">Cognitive core</div>
       <div class="right">Ambient mode</div>
     </section>
@@ -395,7 +373,6 @@
     const nextItem = document.getElementById('nextItem');
     const weatherText = document.getElementById('weatherText');
     const weatherTemp = document.getElementById('weatherTemp');
-    const weatherHint = document.getElementById('weatherHint');
     let schedule = [];
 
     function toMinutes(t) {
@@ -438,23 +415,19 @@
       if (!current) throw new Error('No weather data');
       weatherTemp.textContent = `${Math.round(current.temperature_2m)}°`;
       weatherText.textContent = codeToText(current.weather_code);
-      weatherHint.textContent = 'Location active';
     }
 
     function initWeather() {
       if (!navigator.geolocation) {
-        weatherText.textContent = 'Location unavailable';
-        weatherHint.textContent = 'Device geolocation unavailable';
+        weatherText.textContent = 'Unavailable';
         return;
       }
       navigator.geolocation.getCurrentPosition(
         (pos) => loadWeather(pos.coords.latitude, pos.coords.longitude).catch(() => {
-          weatherText.textContent = 'Weather unavailable';
-          weatherHint.textContent = 'Weather feed error';
+          weatherText.textContent = 'Error';
         }),
         () => {
-          weatherText.textContent = 'Location needed';
-          weatherHint.textContent = 'Enable Safari location access';
+          weatherText.textContent = 'Enable location';
         },
         { enableHighAccuracy: false, timeout: 10000, maximumAge: 900000 }
       );
