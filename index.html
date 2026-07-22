@@ -390,25 +390,13 @@
   </main>
 
   <script>
-    const schedule = [
-      { label: 'Wake', start: '06:15', end: '07:10' },
-      { label: 'Commute to work', start: '07:10', end: '07:58' },
-      { label: 'Work', start: '08:00', end: '16:00' },
-      { label: 'Commute home', start: '16:00', end: '16:48' },
-      { label: 'House maintenance', start: '17:00', end: '17:30' },
-      { label: 'Warm-up / prep', start: '17:30', end: '18:30' },
-      { label: 'Dinner', start: '18:45', end: '19:15' },
-      { label: 'Gaming / free block', start: '19:15', end: '21:00' },
-      { label: 'Off PC', start: '21:00', end: '21:30' },
-      { label: 'Sleep', start: '22:00', end: '23:59' }
-    ];
-
     const timeNow = document.getElementById('timeNow');
     const dateLabel = document.getElementById('dateLabel');
     const nextItem = document.getElementById('nextItem');
     const weatherText = document.getElementById('weatherText');
     const weatherTemp = document.getElementById('weatherTemp');
     const weatherHint = document.getElementById('weatherHint');
+    let schedule = [];
 
     function toMinutes(t) {
       const [h, m] = t.split(':').map(Number);
@@ -472,7 +460,31 @@
       );
     }
 
-    updateClock();
+    async function loadSchedule() {
+      try {
+        const res = await fetch('schedule.json');
+        if (res.ok) {
+          schedule = await res.json();
+        }
+      } catch (e) {
+        console.error('Schedule not found, using defaults');
+        schedule = [
+          { label: 'Wake', start: '06:15', end: '07:10' },
+          { label: 'Commute to work', start: '07:10', end: '07:58' },
+          { label: 'Work', start: '08:00', end: '16:00' },
+          { label: 'Commute home', start: '16:00', end: '16:48' },
+          { label: 'House maintenance', start: '17:00', end: '17:30' },
+          { label: 'Warm-up / prep', start: '17:30', end: '18:30' },
+          { label: 'Dinner', start: '18:45', end: '19:15' },
+          { label: 'Gaming / free block', start: '19:15', end: '21:00' },
+          { label: 'Off PC', start: '21:00', end: '21:30' },
+          { label: 'Sleep', start: '22:00', end: '23:59' }
+        ];
+      }
+      updateClock();
+    }
+
+    loadSchedule();
     setInterval(updateClock, 15000);
     initWeather();
   </script>
